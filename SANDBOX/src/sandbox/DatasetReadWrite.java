@@ -1,7 +1,6 @@
 // TODO this only displays ONE dataset so far...
 //      how do we display all of them?
 //      table? tabbed panes + search field?
-// TODO change the classname
 // TODO remove hard-coding of file locations
 // TODO private static methods are bad
 // TODO maybe refactor to classes
