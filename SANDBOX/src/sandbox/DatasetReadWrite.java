@@ -69,9 +69,93 @@ public class DatasetReadWrite {
 			1, 1, 1, 1, 1, 10, 27, 1, 1, 80, 25, 25, 25, 25 };
 	private static int rows = BLOCKS.length;
 	private static JTextField[] textfields = new JTextField[rows];
+	
+	public DatasetReadWrite() {
+		init();
+	}
+
+	private void init() {
+		// FIXME final
+				final JFrame frame = new JFrame();
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+				JPanel main = new JPanel(new BorderLayout());
+
+				/* populating the info panel */
+
+				// FIXME final
+				final JPanel dataPane = new JPanel(new SpringLayout());
+
+				// should be an array, because we might want to write the labels to file
+				// at some point
+				JLabel[] labels = new JLabel[rows];
+				for (int i = 0; i < rows; i++) {
+					// with Spring Form
+					labels[i] = new JLabel("(" + (i + 1) + ")");
+					dataPane.add(labels[i]);
+					textfields[i] = new JTextField();
+					labels[i].setLabelFor(textfields[i]);
+					dataPane.add(textfields[i]);
+				}
+
+				/* lay out the panel with SpringLayout */
+				SpringUtilities.makeCompactGrid(dataPane, rows, 2, // rows, cols
+						0, 0, // initX, initY
+						1, 1); // xPad, yPad
+
+				/* adding the panel to the scroll pane */
+				JScrollPane scrollPane = new JScrollPane(dataPane);
+
+				/* creating and setting the buttons */
+
+				JButton readButton = new JButton("Read");
+				readButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							inputToGUI();
+//							frame.repaint();
+							dataPane.repaint();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
+					}
+				});
+
+				JButton writeButton = new JButton("Write");
+				writeButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							outputFromGUI();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				});
+				
+				
+
+				JPanel buttonPane = new JPanel();
+				buttonPane.add(readButton);
+				buttonPane.add(writeButton);
+
+				main.add(scrollPane, BorderLayout.CENTER);
+				main.add(buttonPane, BorderLayout.SOUTH);
+
+				frame.getContentPane().add(main);
+				frame.pack();
+				frame.setLocationRelativeTo(null);
+				frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+				frame.setVisible(true);
+		
+	}
 
 	// TODO generalize Textfield ?
-	private static void inputToGUI() throws IOException {
+	private void inputToGUI() throws IOException {
 		BufferedReader in = null;
 		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -95,7 +179,7 @@ public class DatasetReadWrite {
 		}
 	}
 
-	protected static void outputFromGUI()
+	protected void outputFromGUI()
 			throws IOException {
 
 		BufferedWriter out = null;
@@ -116,83 +200,7 @@ public class DatasetReadWrite {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-
-		// FIXME final
-		final JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		JPanel main = new JPanel(new BorderLayout());
-
-		/* populating the info panel */
-
-		// FIXME final
-		final JPanel dataPane = new JPanel(new SpringLayout());
-
-		// should be an array, because we might want to write the labels to file
-		// at some point
-		JLabel[] labels = new JLabel[rows];
-		for (int i = 0; i < rows; i++) {
-			// with Spring Form
-			labels[i] = new JLabel("(" + (i + 1) + ")");
-			dataPane.add(labels[i]);
-			textfields[i] = new JTextField();
-			labels[i].setLabelFor(textfields[i]);
-			dataPane.add(textfields[i]);
-		}
-
-		/* lay out the panel with SpringLayout */
-		SpringUtilities.makeCompactGrid(dataPane, rows, 2, // rows, cols
-				0, 0, // initX, initY
-				1, 1); // xPad, yPad
-
-		/* adding the panel to the scroll pane */
-		JScrollPane scrollPane = new JScrollPane(dataPane);
-
-		/* creating and setting the buttons */
-
-		JButton readButton = new JButton("Read");
-		readButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					DatasetReadWrite.inputToGUI();
-//					frame.repaint();
-					dataPane.repaint();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-		});
-
-		JButton writeButton = new JButton("Write");
-		writeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					DatasetReadWrite.outputFromGUI();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		
-		
-
-		JPanel buttonPane = new JPanel();
-		buttonPane.add(readButton);
-		buttonPane.add(writeButton);
-
-		main.add(scrollPane, BorderLayout.CENTER);
-		main.add(buttonPane, BorderLayout.SOUTH);
-
-		frame.getContentPane().add(main);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-		frame.setVisible(true);
+		new DatasetReadWrite();
 	}
 
 }
