@@ -11,6 +11,7 @@
 package sandbox;
 
 import java.awt.BorderLayout;
+import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -103,7 +104,8 @@ public class Copy {
 
 		/* populating the info panel */
 
-		JPanel dataPane = new JPanel(new SpringLayout());
+		// FIXME final
+		final JPanel dataPane = new JPanel(new SpringLayout());
 
 		// should be an array, because we might want to write the labels to file
 		// at some point
@@ -136,7 +138,8 @@ public class Copy {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Copy.inputToGUI(inputFile, dataset, blocks, textfields);
-					frame.repaint();
+//					frame.repaint();
+					dataPane.repaint();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
