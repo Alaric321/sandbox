@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.RepaintManager;
 import javax.swing.SpringLayout;
 
 public class Copy {
@@ -57,7 +58,6 @@ public class Copy {
 		}
 	}
 
-
 	protected static void outputFromGUI(String output, JTextField[] textfields)
 			throws IOException {
 
@@ -73,7 +73,6 @@ public class Copy {
 				out.close();
 		}
 	}
-
 
 	/**
 	 * @param args
@@ -96,7 +95,8 @@ public class Copy {
 		final String outputFile = "C:\\out.txt";
 		final int rows = blocks.length;
 
-		JFrame frame = new JFrame();
+		// FIXME final
+		final JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel main = new JPanel(new BorderLayout());
@@ -136,6 +136,7 @@ public class Copy {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Copy.inputToGUI(inputFile, dataset, blocks, textfields);
+					frame.repaint();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -156,8 +157,6 @@ public class Copy {
 				}
 			}
 		});
-		
-		
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.add(readButton);
