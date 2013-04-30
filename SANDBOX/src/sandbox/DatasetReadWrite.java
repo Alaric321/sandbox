@@ -7,6 +7,35 @@
 // TODO maybe refactor to classes
 // TODO replace indexed element with currentX var
 
+/* varianten zur aufnahme aller datasets 
+ * 
+ * A) combobox
+ *    + einfachste loesung
+ *    - unpraktisch
+ * 1. array von datasets (pro session persistent), zugriff auf index des arrays anhand 
+ *    auswahl in dropdown
+ * 2. datasets fortlaufend in textfields (pro session persistent) einlesen, counter i laufen 
+ *    lassen zur nummerierung in dropdown, (i-1)*rowPerDataset ist startindex zur anzeige in GUI 
+ * 
+ * B) table
+ * 1. datasets fortlaufend einlesen und in tabelle(n) schreiben
+ *    + pro session nichts persistent
+ *    - tabellen muessen aufgeteilt werden oder horizontal muss sehr weit gescrollt werden
+ *    ? prioritaet der datensaetze koennte anzeige reduzieren
+ *    
+ * C) suchfeld
+ *    +- suche gezielt nach bestimmten infos
+ *    - aktuell ohne Persistence ist das nur moeglich, wenn ein primary key pro dataset festegelegt
+ *      wird, wie z.B. die kunden-id
+ *    
+ * natuerlich koennen A und C auch fuer B als auswahlkomponente benutzt werden      
+ *    
+ * in kombination mit obigen ansaetzen:
+ * i) card pane (keine aufteilung der infos moeglich)
+ * ii)tabbed pane (aufteilung der infos)
+ *    
+ *  */
+
 package sandbox;
 
 import java.awt.BorderLayout;
@@ -25,7 +54,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-public class Copy {
+public class DatasetReadWrite {
 
 	// public int[] blocks =
 	// {10,10,10,20,20,20,30,20,30,100,100,50,100,100,60,80,20,80,30,30,30,30,30,30,80,10,3,20,30,30,4,7,10,10,10,20,10,1,1,1,10,1024,1,1,1,1,1,50,10,1024,1,20,10,40,8,8,11,7,10,3,10,1,10,1,11,1,100,20,1,1,10,1,1,1,1,1,30,30,1,10,1,10,1,10,1,10,1,10,1,10,1,10,10,10,1,10,1,1,1,1,1,30,30,1,10,1,10,5,5,1,1,10,2,1,1,1,1,1,1,1,10,27,1,1,80,25,25,25,25};
@@ -134,7 +163,7 @@ public class Copy {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Copy.inputToGUI(inputFile, dataset, blocks, textfields);
+					DatasetReadWrite.inputToGUI(inputFile, dataset, blocks, textfields);
 //					frame.repaint();
 					dataPane.repaint();
 				} catch (IOException e1) {
@@ -150,13 +179,15 @@ public class Copy {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Copy.outputFromGUI(outputFile, textfields);
+					DatasetReadWrite.outputFromGUI(outputFile, textfields);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
+		
+		
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.add(readButton);
