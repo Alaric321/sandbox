@@ -53,105 +53,101 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-public class DatasetReadWrite {
-
+public class DatasetReadWrite extends JFrame {
 
 	private static final String INPUT_FILE = "C:\\in.txt";
 	private static final String OUTPUT_FILE = "C:\\out.txt";
 	private static final char[] DATASETS = new char[4195];
-	private static final int[] BLOCKS = { 10, 10, 10, 20, 20, 20, 30, 20, 30, 100, 100,
-			50, 100, 100, 60, 80, 20, 80, 30, 30, 30, 30, 30, 30, 80, 10,
-			3, 20, 30, 30, 4, 7, 10, 10, 10, 20, 10, 1, 1, 1, 10, 1024, 1,
-			1, 1, 1, 1, 50, 10, 1024, 1, 20, 10, 40, 8, 8, 1, 1, 7, 10, 3,
-			10, 1, 10, 1, 11, 1, 100, 20, 1, 1, 10, 1, 1, 1, 1, 1, 30, 30,
-			1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10,
-			1, 1, 1, 1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1,
-			1, 1, 1, 1, 1, 10, 27, 1, 1, 80, 25, 25, 25, 25 };
+	private static final int[] BLOCKS = { 10, 10, 10, 20, 20, 20, 30, 20, 30,
+			100, 100, 50, 100, 100, 60, 80, 20, 80, 30, 30, 30, 30, 30, 30, 80,
+			10, 3, 20, 30, 30, 4, 7, 10, 10, 10, 20, 10, 1, 1, 1, 10, 1024, 1,
+			1, 1, 1, 1, 50, 10, 1024, 1, 20, 10, 40, 8, 8, 1, 1, 7, 10, 3, 10,
+			1, 10, 1, 11, 1, 100, 20, 1, 1, 10, 1, 1, 1, 1, 1, 30, 30, 1, 10,
+			1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10, 1, 1, 1,
+			1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1, 1, 1, 1, 1, 1,
+			10, 27, 1, 1, 80, 25, 25, 25, 25 };
 	private static int rows = BLOCKS.length;
 	private static JTextField[] textfields = new JTextField[rows];
-	
+
 	public DatasetReadWrite() {
 		init();
 	}
 
 	private void init() {
+		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JPanel main = new JPanel(new BorderLayout());
+
+		/* populating the info panel */
+
 		// FIXME final
-				final JFrame frame = new JFrame();
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		final JPanel dataPane = new JPanel(new SpringLayout());
 
-				JPanel main = new JPanel(new BorderLayout());
+		// should be an array, because we might want to write the labels to file
+		// at some point
+		JLabel[] labels = new JLabel[rows];
+		for (int i = 0; i < rows; i++) {
+			// with Spring Form
+			labels[i] = new JLabel("(" + (i + 1) + ")");
+			dataPane.add(labels[i]);
+			textfields[i] = new JTextField();
+			labels[i].setLabelFor(textfields[i]);
+			dataPane.add(textfields[i]);
+		}
 
-				/* populating the info panel */
+		/* lay out the panel with SpringLayout */
+		SpringUtilities.makeCompactGrid(dataPane, rows, 2, // rows, cols
+				0, 0, // initX, initY
+				1, 1); // xPad, yPad
 
-				// FIXME final
-				final JPanel dataPane = new JPanel(new SpringLayout());
+		/* adding the panel to the scroll pane */
+		JScrollPane scrollPane = new JScrollPane(dataPane);
 
-				// should be an array, because we might want to write the labels to file
-				// at some point
-				JLabel[] labels = new JLabel[rows];
-				for (int i = 0; i < rows; i++) {
-					// with Spring Form
-					labels[i] = new JLabel("(" + (i + 1) + ")");
-					dataPane.add(labels[i]);
-					textfields[i] = new JTextField();
-					labels[i].setLabelFor(textfields[i]);
-					dataPane.add(textfields[i]);
+		/* creating and setting the buttons */
+
+		JButton readButton = new JButton("Read");
+		readButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					inputToGUI();
+					// frame.repaint();
+					dataPane.repaint();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 
-				/* lay out the panel with SpringLayout */
-				SpringUtilities.makeCompactGrid(dataPane, rows, 2, // rows, cols
-						0, 0, // initX, initY
-						1, 1); // xPad, yPad
+			}
+		});
 
-				/* adding the panel to the scroll pane */
-				JScrollPane scrollPane = new JScrollPane(dataPane);
+		JButton writeButton = new JButton("Write");
+		writeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					outputFromGUI();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 
-				/* creating and setting the buttons */
+		JPanel buttonPane = new JPanel();
+		buttonPane.add(readButton);
+		buttonPane.add(writeButton);
 
-				JButton readButton = new JButton("Read");
-				readButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						try {
-							inputToGUI();
-//							frame.repaint();
-							dataPane.repaint();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+		main.add(scrollPane, BorderLayout.CENTER);
+		main.add(buttonPane, BorderLayout.SOUTH);
 
-					}
-				});
+		this.getContentPane().add(main);
+		this.pack();
+		this.setLocationRelativeTo(null);
+		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		this.setVisible(true);
 
-				JButton writeButton = new JButton("Write");
-				writeButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						try {
-							outputFromGUI();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				});
-				
-				
-
-				JPanel buttonPane = new JPanel();
-				buttonPane.add(readButton);
-				buttonPane.add(writeButton);
-
-				main.add(scrollPane, BorderLayout.CENTER);
-				main.add(buttonPane, BorderLayout.SOUTH);
-
-				frame.getContentPane().add(main);
-				frame.pack();
-				frame.setLocationRelativeTo(null);
-				frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-				frame.setVisible(true);
-		
 	}
 
 	// TODO generalize Textfield ?
@@ -179,8 +175,7 @@ public class DatasetReadWrite {
 		}
 	}
 
-	protected void outputFromGUI()
-			throws IOException {
+	protected void outputFromGUI() throws IOException {
 
 		BufferedWriter out = null;
 
