@@ -55,25 +55,36 @@ import javax.swing.SpringLayout;
 
 public class DatasetReadWrite {
 
-	// public int[] blocks =
-	// {10,10,10,20,20,20,30,20,30,100,100,50,100,100,60,80,20,80,30,30,30,30,30,30,80,10,3,20,30,30,4,7,10,10,10,20,10,1,1,1,10,1024,1,1,1,1,1,50,10,1024,1,20,10,40,8,8,11,7,10,3,10,1,10,1,11,1,100,20,1,1,10,1,1,1,1,1,30,30,1,10,1,10,1,10,1,10,1,10,1,10,1,10,10,10,1,10,1,1,1,1,1,30,30,1,10,1,10,5,5,1,1,10,2,1,1,1,1,1,1,1,10,27,1,1,80,25,25,25,25};
+
+	private static final String INPUT_FILE = "C:\\in.txt";
+	private static final String OUTPUT_FILE = "C:\\out.txt";
+	private static final char[] DATASETS = new char[4195];
+	private static final int[] BLOCKS = { 10, 10, 10, 20, 20, 20, 30, 20, 30, 100, 100,
+			50, 100, 100, 60, 80, 20, 80, 30, 30, 30, 30, 30, 30, 80, 10,
+			3, 20, 30, 30, 4, 7, 10, 10, 10, 20, 10, 1, 1, 1, 10, 1024, 1,
+			1, 1, 1, 1, 50, 10, 1024, 1, 20, 10, 40, 8, 8, 1, 1, 7, 10, 3,
+			10, 1, 10, 1, 11, 1, 100, 20, 1, 1, 10, 1, 1, 1, 1, 1, 30, 30,
+			1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10,
+			1, 1, 1, 1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1,
+			1, 1, 1, 1, 1, 10, 27, 1, 1, 80, 25, 25, 25, 25 };
+	private static int rows = BLOCKS.length;
+	private static JTextField[] textfields = new JTextField[rows];
 
 	// TODO generalize Textfield ?
-	private static void inputToGUI(String input, char[] dataset, int[] blocks,
-			JTextField[] textfields) throws IOException {
+	private static void inputToGUI() throws IOException {
 		BufferedReader in = null;
 		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		try {
-			in = new BufferedReader(new FileReader(input));
-			in.read(dataset);
-			int numberOfBlocks = blocks.length;
+			in = new BufferedReader(new FileReader(INPUT_FILE));
+			in.read(DATASETS);
+			int numberOfBlocks = BLOCKS.length;
 			int charIndex = 0;
 			String text;
 			for (int i = 0; i < numberOfBlocks; i++) {
 				text = "";
-				for (int j = 0; j < blocks[i]; j++, charIndex++) {
-					text += (dataset[charIndex]);
+				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
+					text += (DATASETS[charIndex]);
 				}
 				textfields[i].setText(text);
 				// textfields[i].setSize(dim);
@@ -84,13 +95,13 @@ public class DatasetReadWrite {
 		}
 	}
 
-	protected static void outputFromGUI(String output, JTextField[] textfields)
+	protected static void outputFromGUI()
 			throws IOException {
 
 		BufferedWriter out = null;
 
 		try {
-			out = new BufferedWriter(new FileWriter(output));
+			out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
 			for (int i = 0; i < textfields.length; i++) {
 				out.write(textfields[i].getText());
 			}
@@ -106,21 +117,6 @@ public class DatasetReadWrite {
 	 */
 	public static void main(String[] args) throws IOException {
 
-		final int[] blocks = { 10, 10, 10, 20, 20, 20, 30, 20, 30, 100, 100,
-				50, 100, 100, 60, 80, 20, 80, 30, 30, 30, 30, 30, 30, 80, 10,
-				3, 20, 30, 30, 4, 7, 10, 10, 10, 20, 10, 1, 1, 1, 10, 1024, 1,
-				1, 1, 1, 1, 50, 10, 1024, 1, 20, 10, 40, 8, 8, 1, 1, 7, 10, 3,
-				10, 1, 10, 1, 11, 1, 100, 20, 1, 1, 10, 1, 1, 1, 1, 1, 30, 30,
-				1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10,
-				1, 1, 1, 1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1,
-				1, 1, 1, 1, 1, 10, 27, 1, 1, 80, 25, 25, 25, 25 };
-		// int[] blocks = { 10, 10, 10 };
-		final char[] dataset = new char[4195];
-		// TODO create file dialog
-		final String inputFile = "C:\\in.txt";
-		final String outputFile = "C:\\out.txt";
-		final int rows = blocks.length;
-
 		// FIXME final
 		final JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -135,9 +131,6 @@ public class DatasetReadWrite {
 		// should be an array, because we might want to write the labels to file
 		// at some point
 		JLabel[] labels = new JLabel[rows];
-		// FIXME must be final for now (although it could be, anyway)
-		// must be an array, because we definitely need to write them to file
-		final JTextField[] textfields = new JTextField[rows];
 		for (int i = 0; i < rows; i++) {
 			// with Spring Form
 			labels[i] = new JLabel("(" + (i + 1) + ")");
@@ -162,7 +155,7 @@ public class DatasetReadWrite {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					DatasetReadWrite.inputToGUI(inputFile, dataset, blocks, textfields);
+					DatasetReadWrite.inputToGUI();
 //					frame.repaint();
 					dataPane.repaint();
 				} catch (IOException e1) {
@@ -178,7 +171,7 @@ public class DatasetReadWrite {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					DatasetReadWrite.outputFromGUI(outputFile, textfields);
+					DatasetReadWrite.outputFromGUI();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
