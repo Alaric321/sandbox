@@ -1,7 +1,6 @@
 // TODO this only displays ONE dataset so far...
 //      how do we display all of them?
 //      table? tabbed panes + search field?
-// TODO change in display is messed up (refresh?)
 // TODO change the classname
 // TODO remove hard-coding of file locations
 // TODO private static methods are bad
@@ -11,7 +10,6 @@
 package sandbox;
 
 import java.awt.BorderLayout;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -25,7 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.RepaintManager;
 import javax.swing.SpringLayout;
 
 public class Copy {
