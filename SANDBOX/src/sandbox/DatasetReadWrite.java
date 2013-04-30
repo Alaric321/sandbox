@@ -2,9 +2,6 @@
 //      how do we display all of them?
 //      table? tabbed panes + search field?
 // TODO remove hard-coding of file locations
-// TODO private static methods are bad
-// TODO maybe refactor to classes
-// TODO replace indexed element with currentX var
 
 /* varianten zur aufnahme aller datasets 
  * 
@@ -57,7 +54,6 @@ public class DatasetReadWrite extends JFrame {
 
 	private static final String INPUT_FILE = "C:\\in.txt";
 	private static final String OUTPUT_FILE = "C:\\out.txt";
-	private static final char[] DATASETS = new char[4195];
 	private static final int[] BLOCKS = { 10, 10, 10, 20, 20, 20, 30, 20, 30,
 			100, 100, 50, 100, 100, 60, 80, 20, 80, 30, 30, 30, 30, 30, 30, 80,
 			10, 3, 20, 30, 30, 4, 7, 10, 10, 10, 20, 10, 1, 1, 1, 10, 1024, 1,
@@ -66,13 +62,17 @@ public class DatasetReadWrite extends JFrame {
 			1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10, 1, 1, 1,
 			1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1, 1, 1, 1, 1, 1,
 			10, 27, 1, 1, 80, 25, 25, 25, 25 };
-	private static int rows = BLOCKS.length;
-	private static JTextField[] textfields = new JTextField[rows];
+	private final char[] DATASETS = new char[4195];
+	private int rows;
+	private JTextField[] textfields;
 
 	public DatasetReadWrite() {
+		this.rows = BLOCKS.length;
+		this.textfields = new JTextField[rows];
 		init();
 	}
 
+	
 	private void init() {
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -144,24 +144,22 @@ public class DatasetReadWrite extends JFrame {
 
 		this.getContentPane().add(main);
 		this.pack();
-		this.setLocationRelativeTo(null);
 		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		this.setVisible(true);
 
 	}
 
 	// TODO generalize Textfield ?
-	private void inputToGUI() throws IOException {
+	protected void inputToGUI() throws IOException {
 		BufferedReader in = null;
 		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
 			in.read(DATASETS);
-			int numberOfBlocks = BLOCKS.length;
 			int charIndex = 0;
 			String text;
-			for (int i = 0; i < numberOfBlocks; i++) {
+			for (int i = 0; i < BLOCKS.length; i++) {
 				text = "";
 				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
 					text += (DATASETS[charIndex]);
@@ -176,9 +174,7 @@ public class DatasetReadWrite extends JFrame {
 	}
 
 	protected void outputFromGUI() throws IOException {
-
 		BufferedWriter out = null;
-
 		try {
 			out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
 			for (int i = 0; i < textfields.length; i++) {
