@@ -1,8 +1,8 @@
-// creating "empty" commit for master before merge with "refactor to class" branch....
 // TODO this only displays ONE dataset so far...
 //      how do we display all of them?
 //      table? tabbed panes + search field?
 // TODO remove hard-coding of file locations
+// TODO flushing data field instead of overwrite
 
 /* varianten zur aufnahme aller datasets 
  * 
@@ -66,27 +66,60 @@ public class DatasetIO extends JFrame {
 			1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10, 1, 1, 1,
 			1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1, 1, 1, 1, 1, 1,
 			10, 27, 1, 1, 80, 25, 25, 25, 25 };
-	private char[] data = new char[4195];
 	private final Vector<char[]> datasets = new Vector<char[]>();
 	private int rows;
 	private JTextField[] textfields;
 	private int numDatasetsInSession = 0;
 	private final JComboBox<Integer> pickDataset = new JComboBox<Integer>();
+	private static final int dataSize = 4195;
 
 	public DatasetIO() {
 		this.rows = BLOCKS.length;
 		this.textfields = new JTextField[rows];
+		pickDataset.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					int selectedDataset = pickDataset.getSelectedIndex();
+//					datasets.get(selectedDataset);
+					displayDataset(selectedDataset);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		init();
 	}
 
-//	private class Dataset {
-//		char[] data = new char[4195];
-//
-//		public char[] getData() {
-//			return this.data;
-//		}
-//	}
 	
+	protected void displayDataset(int datasetIndex) throws IOException {
+		BufferedReader in = null;
+		char[] data = new char[dataSize];
+		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+		try {
+			in = new BufferedReader(new FileReader(INPUT_FILE));
+			data = datasets.get(datasetIndex);
+			int charIndex = 0;
+			String text;
+			for (int i = 0; i < BLOCKS.length; i++) {
+				text = "";
+				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
+					text += (data[charIndex]);
+				}
+				textfields[i].setText(text);
+				// textfields[i].setSize(dim);
+			}
+		} finally {
+			if (in != null)
+				in.close();
+		}
+		
+	}
+
+
 	private void init() {
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -178,6 +211,7 @@ public class DatasetIO extends JFrame {
 
 	protected int readDataset() throws IOException {
 		BufferedReader in = null;
+		char[] data = new char[dataSize];
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
 			while (in.read(data) != -1) {
@@ -195,27 +229,6 @@ public class DatasetIO extends JFrame {
 		outputFromGUI();
 	}
 
-	protected void inputToGUI() throws IOException {
-		BufferedReader in = null;
-		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
-		try {
-			in = new BufferedReader(new FileReader(INPUT_FILE));
-			int charIndex = 0;
-			String text;
-			for (int i = 0; i < BLOCKS.length; i++) {
-				text = "";
-				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-					text += (datasets.get(charIndex));
-				}
-				textfields[i].setText(text);
-				// textfields[i].setSize(dim);
-			}
-		} finally {
-			if (in != null)
-				in.close();
-		}
-	}
 
 	protected void outputFromGUI() throws IOException {
 		BufferedWriter out = null;
