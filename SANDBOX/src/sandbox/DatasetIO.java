@@ -1,4 +1,3 @@
-// creating "empty" commit for master before merge with "refactor to class" branch...
 // TODO this only displays ONE dataset so far...
 //      how do we display all of them?
 //      table? tabbed panes + search field?
@@ -51,7 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-public class DatasetReadWrite extends JFrame {
+public class DatasetIO extends JFrame {
 
 	private static final String INPUT_FILE = "C:\\in.txt";
 	private static final String OUTPUT_FILE = "C:\\out.txt";
@@ -63,19 +62,18 @@ public class DatasetReadWrite extends JFrame {
 			1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10, 1, 1, 1,
 			1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1, 1, 1, 1, 1, 1,
 			10, 27, 1, 1, 80, 25, 25, 25, 25 };
-	private final char[] DATASETS = new char[4195];
+	private final char[] DATASET = new char[4195];
 	private int rows;
 	private JTextField[] textfields;
 
-	public DatasetReadWrite() {
+	public DatasetIO() {
 		this.rows = BLOCKS.length;
 		this.textfields = new JTextField[rows];
 		init();
 	}
 
-	
 	private void init() {
-		
+
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel main = new JPanel(new BorderLayout());
@@ -111,15 +109,8 @@ public class DatasetReadWrite extends JFrame {
 		readButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					inputToGUI();
-					// frame.repaint();
-					dataPane.repaint();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
+				read();
+				dataPane.repaint();
 			}
 		});
 
@@ -127,12 +118,7 @@ public class DatasetReadWrite extends JFrame {
 		writeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					outputFromGUI();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				write();
 			}
 		});
 
@@ -150,6 +136,24 @@ public class DatasetReadWrite extends JFrame {
 
 	}
 
+	protected void write() {
+		try {
+			outputFromGUI();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	protected void read() {
+		try {
+			inputToGUI();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	// TODO generalize Textfield ?
 	protected void inputToGUI() throws IOException {
 		BufferedReader in = null;
@@ -157,13 +161,13 @@ public class DatasetReadWrite extends JFrame {
 
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
-			in.read(DATASETS);
+			in.read(DATASET);
 			int charIndex = 0;
 			String text;
 			for (int i = 0; i < BLOCKS.length; i++) {
 				text = "";
 				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-					text += (DATASETS[charIndex]);
+					text += (DATASET[charIndex]);
 				}
 				textfields[i].setText(text);
 				// textfields[i].setSize(dim);
@@ -192,7 +196,7 @@ public class DatasetReadWrite extends JFrame {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		new DatasetReadWrite();
+		new DatasetIO();
 	}
 
 }
