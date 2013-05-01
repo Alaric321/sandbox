@@ -2,6 +2,8 @@
 //      how do we display all of them?
 //      table? tabbed panes + search field?
 // TODO remove hard-coding of file locations
+// TODO flushing data field instead of overwrite
+// TODO dropdown not as a field?
 
 /* varianten zur aufnahme aller datasets 
  * 
@@ -42,7 +44,10 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Vector;
+
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -62,15 +67,56 @@ public class DatasetIO extends JFrame {
 			1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 10, 10, 1, 10, 1, 1, 1,
 			1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1, 1, 1, 1, 1, 1,
 			10, 27, 1, 1, 80, 25, 25, 25, 25 };
-	private final char[] DATASET = new char[4195];
 	private int rows;
 	private JTextField[] textfields;
+	private final JComboBox<Integer> pickDataset = new JComboBox<Integer>();
+	private static final int dataSize = 4195;
+	private char[] data;
+	
 
 	public DatasetIO() {
 		this.rows = BLOCKS.length;
 		this.textfields = new JTextField[rows];
+		pickDataset.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int selectedDataset = pickDataset.getSelectedIndex();
+					displayDataset(selectedDataset);
+				} catch (IOException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		});
 		init();
 	}
+
+	
+	protected void displayDataset(int datasetIndex) throws IOException {
+		BufferedReader in = null;
+		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+		try {
+			in = new BufferedReader(new FileReader(INPUT_FILE));
+			int startIndex = (datasetIndex - 1) * ;
+			String text;
+			for (int i = 0; i < BLOCKS.length; i++) {
+				text = "";
+				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
+					text += (data[charIndex]);
+				}
+				textfields[i].setText(text);
+				// textfields[i].setSize(dim);
+			}
+		} finally {
+			if (in != null)
+				in.close();
+		}
+		
+	}
+
 
 	private void init() {
 
@@ -125,6 +171,7 @@ public class DatasetIO extends JFrame {
 		JPanel buttonPane = new JPanel();
 		buttonPane.add(readButton);
 		buttonPane.add(writeButton);
+		buttonPane.add(pickDataset);
 
 		main.add(scrollPane, BorderLayout.CENTER);
 		main.add(buttonPane, BorderLayout.SOUTH);
@@ -136,47 +183,49 @@ public class DatasetIO extends JFrame {
 
 	}
 
-	protected void write() {
-		try {
-			outputFromGUI();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	protected void read() {
 		try {
-			inputToGUI();
+			readDataset();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		pickDataset.setSelectedIndex(0);
 	}
 
-	// TODO generalize Textfield ?
-	protected void inputToGUI() throws IOException {
-		BufferedReader in = null;
-		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	protected void write() {
+		try {
+			writeDataset();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+	}
+
+	// TODO using "data" this way seems bad
+	protected void readDataset() throws IOException {
+		BufferedReader in = null;
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
-			in.read(DATASET);
-			int charIndex = 0;
-			String text;
-			for (int i = 0; i < BLOCKS.length; i++) {
-				text = "";
-				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-					text += (DATASET[charIndex]);
+			int i = 1;
+			int c = 0;
+			while (in.read(data) != -1) {
+				if (i % dataSize == 0) {
+					pickDataset.addItem(c);
 				}
-				textfields[i].setText(text);
-				// textfields[i].setSize(dim);
+				i++;
 			}
 		} finally {
 			if (in != null)
 				in.close();
 		}
 	}
+
+	protected void writeDataset() throws IOException {
+		outputFromGUI();
+	}
+
 
 	protected void outputFromGUI() throws IOException {
 		BufferedWriter out = null;
