@@ -3,6 +3,7 @@
 //      table? tabbed panes + search field?
 // TODO remove hard-coding of file locations
 // TODO flushing data field instead of overwrite
+// TODO dropdown not as a field?
 
 /* varianten zur aufnahme aller datasets 
  * 
@@ -79,14 +80,13 @@ public class DatasetIO extends JFrame {
 		pickDataset.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				try {
 					int selectedDataset = pickDataset.getSelectedIndex();
-//					datasets.get(selectedDataset);
 					displayDataset(selectedDataset);
-				} catch (IOException e) {
+				} catch (IOException ex) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ex.printStackTrace();
 				}
 			}
 		});
@@ -96,12 +96,11 @@ public class DatasetIO extends JFrame {
 	
 	protected void displayDataset(int datasetIndex) throws IOException {
 		BufferedReader in = null;
-		char[] data = new char[dataSize];
+		char[] data = datasets.get(datasetIndex);
 		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
-			data = datasets.get(datasetIndex);
 			int charIndex = 0;
 			String text;
 			for (int i = 0; i < BLOCKS.length; i++) {
@@ -209,6 +208,7 @@ public class DatasetIO extends JFrame {
 
 	}
 
+	// TODO using "data" this way seems bad
 	protected int readDataset() throws IOException {
 		BufferedReader in = null;
 		char[] data = new char[dataSize];
@@ -216,7 +216,7 @@ public class DatasetIO extends JFrame {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
 			while (in.read(data) != -1) {
 				datasets.add(data);
-//				data = new char[4195];
+				data = new char[dataSize];
 			}
 		} finally {
 			if (in != null)
