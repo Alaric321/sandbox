@@ -5,33 +5,33 @@
 // TODO flushing data field instead of overwrite
 // TODO dropdown not as a field?
 
-/* varianten zur aufnahme aller datasets 
- * 
+/* varianten zur aufnahme aller datasets
+ *
  * A) combobox
  *    + einfachste loesung
  *    - unpraktisch
- * 1. array von datasets (pro session persistent), zugriff auf index des arrays anhand 
+ * 1. array von datasets (pro session persistent), zugriff auf index des arrays anhand
  *    auswahl in dropdown
- * 2. datasets fortlaufend in textfields (pro session persistent) einlesen, counter i laufen 
- *    lassen zur nummerierung in dropdown, (i-1)*rowPerDataset ist startindex zur anzeige in GUI 
- * 
+ * 2. datasets fortlaufend in textfields (pro session persistent) einlesen, counter i laufen
+ *    lassen zur nummerierung in dropdown, (i-1)*rowPerDataset ist startindex zur anzeige in GUI
+ *
  * B) table
  * 1. datasets fortlaufend einlesen und in tabelle(n) schreiben
  *    + pro session nichts persistent
  *    - tabellen muessen aufgeteilt werden oder horizontal muss sehr weit gescrollt werden
  *    ? prioritaet der datensaetze koennte anzeige reduzieren
- *    
+ *
  * C) suchfeld
  *    +- suche gezielt nach bestimmten infos
  *    - aktuell ohne Persistence ist das nur moeglich, wenn ein primary key pro dataset festegelegt
  *      wird, wie z.B. die kunden-id
- *    
- * natuerlich koennen A und C auch fuer B als auswahlkomponente benutzt werden      
- *    
+ *
+ * natuerlich koennen A und C auch fuer B als auswahlkomponente benutzt werden
+ *
  * in kombination mit obigen ansaetzen:
  * i) card pane (keine aufteilung der infos moeglich)
  * ii)tabbed pane (aufteilung der infos)
- *    
+ *
  *  */
 
 package sandbox;
@@ -77,44 +77,42 @@ public class DatasetIO extends JFrame {
 	public DatasetIO() {
 		this.rows = BLOCKS.length;
 		this.textfields = new JTextField[rows];
-//		pickDataset.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				try {
-//					int selectedDataset = pickDataset.getSelectedIndex();
-//					displayDataset(selectedDataset);
-//				} catch (IOException ex) {
-//					// TODO Auto-generated catch block
-//					ex.printStackTrace();
-//				}
-//			}
-//		});
+		pickDataset.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int selectedDataset = pickDataset.getSelectedIndex();
+					displayDataset(selectedDataset);
+				} catch (IOException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		});
 		init();
 	}
 
-//	protected void displayDataset(int datasetIndex) throws IOException {
-//		BufferedReader in = null;
-//		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-//
-//		try {
-//			in = new BufferedReader(new FileReader(INPUT_FILE));
-//			int startIndex = (datasetIndex - 1) * ;
-//			String text;
-//			for (int i = 0; i < BLOCKS.length; i++) {
-//				text = "";
-//				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-//					text += (data[charIndex]);
-//				}
-//				textfields[i].setText(text);
-//				// textfields[i].setSize(dim);
-//			}
-//		} finally {
-//			if (in != null)
-//				in.close();
-//		}
-//		
-//	}
+	protected void displayDataset(int datasetIndex) throws IOException {
+		BufferedReader in = null;
+		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+		try {
+			in = new BufferedReader(new FileReader(INPUT_FILE));
+			int startIndex = (datasetIndex - 1) * BLOCKS.length;
+			// int endIndex = startIndex + BLOCKS.length;
+			// endIndex should be redundant
+			// int endIndex = datasetIndex * BLOCKS.length;
+			for (int i = 0, j = startIndex; i < BLOCKS.length/* , j < endIndex */; i++, j++) {
+				textfields[i].setText(textfieldInput.get(j));
+				// textfields[i].setSize(dim);
+			}
+		} finally {
+			if (in != null)
+				in.close();
+		}
+
+	}
 
 	private void init() {
 
@@ -184,7 +182,7 @@ public class DatasetIO extends JFrame {
 	protected void read() {
 		try {
 			readDataset();
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -208,22 +206,26 @@ public class DatasetIO extends JFrame {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
 			int charIndex = 0;
 			String text;
-			int c;
-			while ((c = in.read()) != -1) {
+			// int c;
+			char[] data = new char[dataSize];
+			while (in.read(data) != -1) {
 				for (int i = 0; i < BLOCKS.length; i++) {
 					text = "";
 					for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-						text += c;
+						text += data[charIndex];
 					}
 					textfieldInput.add(text);
+					// System.out.println(textfieldInput.size());
 				}
+				data = new char[dataSize];
+				charIndex = 0;
 			}
 		} finally {
 			if (in != null)
 				in.close();
 		}
 		numDatasets = textfieldInput.size() / BLOCKS.length;
-//		numDatasets = data.length / dataSize;
+		// numDatasets = data.length / dataSize;
 	}
 
 	protected void writeDataset() throws IOException {
