@@ -70,10 +70,9 @@ public class DatasetIO extends JFrame {
 	private int rows;
 	private int numDatasets = 0;
 	private JTextField[] textfields;
-	private String[] textfieldInput;
+	private Vector<String> textfieldInput = new Vector<String>();
 	private final JComboBox<Integer> pickDataset = new JComboBox<Integer>();
 	private static final int dataSize = 4195;
-	private char[] data;
 
 	public DatasetIO() {
 		this.rows = BLOCKS.length;
@@ -208,23 +207,22 @@ public class DatasetIO extends JFrame {
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
 			int charIndex = 0;
-			int n = 0;
 			String text;
-			while (in.read(data) != -1) {
+			int c;
+			while ((c = in.read()) != -1) {
 				for (int i = 0; i < BLOCKS.length; i++) {
 					text = "";
 					for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-						text += (data[charIndex]);
+						text += c;
 					}
-					textfieldInput[n] = text;
-					n++;
+					textfieldInput.add(text);
 				}
 			}
 		} finally {
 			if (in != null)
 				in.close();
 		}
-		numDatasets = textfieldInput.length / BLOCKS.length;
+		numDatasets = textfieldInput.size() / BLOCKS.length;
 //		numDatasets = data.length / dataSize;
 	}
 
