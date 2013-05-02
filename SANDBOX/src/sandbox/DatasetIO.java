@@ -68,55 +68,54 @@ public class DatasetIO extends JFrame {
 			1, 1, 30, 30, 1, 10, 1, 10, 5, 5, 1, 1, 10, 2, 1, 1, 1, 1, 1, 1, 1,
 			10, 27, 1, 1, 80, 25, 25, 25, 25 };
 	private int rows;
+	private int numDatasets = 0;
 	private JTextField[] textfields;
+	private String[] textfieldInput;
 	private final JComboBox<Integer> pickDataset = new JComboBox<Integer>();
 	private static final int dataSize = 4195;
 	private char[] data;
-	
 
 	public DatasetIO() {
 		this.rows = BLOCKS.length;
 		this.textfields = new JTextField[rows];
-		pickDataset.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int selectedDataset = pickDataset.getSelectedIndex();
-					displayDataset(selectedDataset);
-				} catch (IOException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				}
-			}
-		});
+//		pickDataset.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				try {
+//					int selectedDataset = pickDataset.getSelectedIndex();
+//					displayDataset(selectedDataset);
+//				} catch (IOException ex) {
+//					// TODO Auto-generated catch block
+//					ex.printStackTrace();
+//				}
+//			}
+//		});
 		init();
 	}
 
-	
-	protected void displayDataset(int datasetIndex) throws IOException {
-		BufferedReader in = null;
-		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
-		try {
-			in = new BufferedReader(new FileReader(INPUT_FILE));
-			int startIndex = (datasetIndex - 1) * ;
-			String text;
-			for (int i = 0; i < BLOCKS.length; i++) {
-				text = "";
-				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-					text += (data[charIndex]);
-				}
-				textfields[i].setText(text);
-				// textfields[i].setSize(dim);
-			}
-		} finally {
-			if (in != null)
-				in.close();
-		}
-		
-	}
-
+//	protected void displayDataset(int datasetIndex) throws IOException {
+//		BufferedReader in = null;
+//		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+//
+//		try {
+//			in = new BufferedReader(new FileReader(INPUT_FILE));
+//			int startIndex = (datasetIndex - 1) * ;
+//			String text;
+//			for (int i = 0; i < BLOCKS.length; i++) {
+//				text = "";
+//				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
+//					text += (data[charIndex]);
+//				}
+//				textfields[i].setText(text);
+//				// textfields[i].setSize(dim);
+//			}
+//		} finally {
+//			if (in != null)
+//				in.close();
+//		}
+//		
+//	}
 
 	private void init() {
 
@@ -186,6 +185,7 @@ public class DatasetIO extends JFrame {
 	protected void read() {
 		try {
 			readDataset();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -203,29 +203,34 @@ public class DatasetIO extends JFrame {
 
 	}
 
-	// TODO using "data" this way seems bad
 	protected void readDataset() throws IOException {
 		BufferedReader in = null;
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
-			int i = 1;
-			int c = 0;
+			int charIndex = 0;
+			int n = 0;
+			String text;
 			while (in.read(data) != -1) {
-				if (i % dataSize == 0) {
-					pickDataset.addItem(c);
+				for (int i = 0; i < BLOCKS.length; i++) {
+					text = "";
+					for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
+						text += (data[charIndex]);
+					}
+					textfieldInput[n] = text;
+					n++;
 				}
-				i++;
 			}
 		} finally {
 			if (in != null)
 				in.close();
 		}
+		numDatasets = textfieldInput.length / BLOCKS.length;
+//		numDatasets = data.length / dataSize;
 	}
 
 	protected void writeDataset() throws IOException {
 		outputFromGUI();
 	}
-
 
 	protected void outputFromGUI() throws IOException {
 		BufferedWriter out = null;
