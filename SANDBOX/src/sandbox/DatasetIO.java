@@ -57,8 +57,8 @@ import javax.swing.SpringLayout;
 
 public class DatasetIO extends JFrame {
 
-	private static final String INPUT_FILE = "C:\\in.txt";
-	private static final String OUTPUT_FILE = "C:\\out.txt";
+	private static final String INPUT_FILE = "C:\\in";
+	private static final String OUTPUT_FILE = "C:\\out";
 	private static final int[] BLOCKS = { 10, 10, 10, 20, 20, 20, 30, 20, 30,
 			100, 100, 50, 100, 100, 60, 80, 20, 80, 30, 30, 30, 30, 30, 30, 80,
 			10, 3, 20, 30, 30, 4, 7, 10, 10, 10, 20, 10, 1, 1, 1, 10, 1024, 1,
@@ -211,12 +211,14 @@ public class DatasetIO extends JFrame {
 	// TODO using "data" this way seems bad
 	protected int readDataset() throws IOException {
 		BufferedReader in = null;
-		char[] data = new char[dataSize];
+		char[] data = new char[dataSize + 1];
 		try {
 			in = new BufferedReader(new FileReader(INPUT_FILE));
 			while (in.read(data) != -1) {
 				datasets.add(data);
-				data = new char[dataSize];
+				// read newline
+				in.read();
+				data = new char[dataSize +1 ];
 			}
 		} finally {
 			if (in != null)
