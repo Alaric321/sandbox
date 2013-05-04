@@ -154,9 +154,18 @@ public class DatasetIO extends JFrame {
 			}
 		});
 
+		JButton writeAllButton = new JButton("WriteAll");
+		writeAllButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				writeAll();
+			}
+		});
+
 		JPanel buttonPane = new JPanel();
 		buttonPane.add(readButton);
 		buttonPane.add(writeButton);
+		buttonPane.add(writeAllButton);
 		buttonPane.add(pickDataset);
 
 		main.add(scrollPane, BorderLayout.CENTER);
@@ -171,7 +180,7 @@ public class DatasetIO extends JFrame {
 
 	protected void read() {
 		try {
-			numDatasetsInSession = readDataset();
+			numDatasetsInSession = readDatasets();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -186,7 +195,6 @@ public class DatasetIO extends JFrame {
 	protected void write() {
 		try {
 			writeDataset();
-			// writeDatasets();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -194,8 +202,17 @@ public class DatasetIO extends JFrame {
 
 	}
 
+	protected void writeAll() {
+		try {
+			writeDatasets();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	// TODO using "data" this way seems bad
-	protected int readDataset() throws IOException {
+	protected int readDatasets() throws IOException {
 		BufferedReader in = null;
 		char[] data = new char[dataSize + 1];
 		try {
@@ -226,21 +243,27 @@ public class DatasetIO extends JFrame {
 		}
 	}
 
-	// protected void writeDatasets() throws IOException {
-	// BufferedWriter out = null;
-	// try {
-	// out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
-	// for (int i = 0; i < numDatasetsInSession; i++) {
-	// for (int j = 0; j < textfields.length; j++) {
-	// out.write(textfields[j].getText());
-	// }
-	// out.write(System.lineSeparator());
-	// }
-	// } finally {
-	// if (out != null)
-	// out.close();
-	// }
-	// }
+	protected void writeDatasets() throws IOException {
+		BufferedWriter out = null;
+		try {
+			out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
+			int charIndex = 0;
+			char[] data;
+			for (int i = 0; i < numDatasetsInSession; i++) {
+				data = datasets.get(i);
+				charIndex = 0;
+				for (int j = 0; j < BLOCKS.length; j++) {
+					for (int k = 0; k < BLOCKS[j]; k++, charIndex++) {
+						out.write(data[charIndex]);
+					}
+				}
+				out.write(System.lineSeparator());
+			}
+		} finally {
+			if (out != null)
+				out.close();
+		}
+	}
 
 	/**
 	 * @param args
