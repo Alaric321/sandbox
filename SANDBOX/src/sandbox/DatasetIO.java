@@ -78,7 +78,7 @@ public class DatasetIO extends JFrame {
 		this.rows = BLOCKS.length;
 		this.textfields = new JTextField[rows];
 		pickDataset.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -93,31 +93,22 @@ public class DatasetIO extends JFrame {
 		init();
 	}
 
-	
 	protected void displayDataset(int datasetIndex) throws IOException {
-		BufferedReader in = null;
 		char[] data = datasets.get(datasetIndex);
 		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
-		try {
-			in = new BufferedReader(new FileReader(INPUT_FILE));
-			int charIndex = 0;
-			String text;
-			for (int i = 0; i < BLOCKS.length; i++) {
-				text = "";
-				for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
-					text += (data[charIndex]);
-				}
-				textfields[i].setText(text);
-				// textfields[i].setSize(dim);
+		int charIndex = 0;
+		String text;
+		for (int i = 0; i < BLOCKS.length; i++) {
+			text = "";
+			for (int j = 0; j < BLOCKS[i]; j++, charIndex++) {
+				text += (data[charIndex]);
 			}
-		} finally {
-			if (in != null)
-				in.close();
-		}
-		
-	}
+			textfields[i].setText(text);
+			// textfields[i].setSize(dim);
 
+		}
+	}
 
 	private void init() {
 
@@ -218,7 +209,7 @@ public class DatasetIO extends JFrame {
 				datasets.add(data);
 				// read newline
 				in.read();
-				data = new char[dataSize +1 ];
+				data = new char[dataSize + 1];
 			}
 		} finally {
 			if (in != null)
@@ -228,22 +219,32 @@ public class DatasetIO extends JFrame {
 	}
 
 	protected void writeDataset() throws IOException {
-		outputFromGUI();
-	}
-
-
-	protected void outputFromGUI() throws IOException {
 		BufferedWriter out = null;
 		try {
 			out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
-			for (int i = 0; i < textfields.length; i++) {
-				out.write(textfields[i].getText());
-			}
+			for (int j = 0; j < textfields.length; j++) {
+					out.write(textfields[j].getText());
+				}
 		} finally {
 			if (out != null)
 				out.close();
 		}
 	}
+//	protected void writeDataset() throws IOException {
+//		BufferedWriter out = null;
+//		try {
+//			out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
+//			for (int i = 0; i < numDatasetsInSession; i++) {
+//				for (int j = 0; j < textfields.length; j++) {
+//					out.write(textfields[j].getText());
+//				}
+//				out.write(System.lineSeparator());
+//			}
+//		} finally {
+//			if (out != null)
+//				out.close();
+//		}
+//	}
 
 	/**
 	 * @param args
