@@ -78,22 +78,16 @@ public class DatasetIO extends JFrame {
 		this.rows = BLOCKS.length;
 		this.textfields = new JTextField[rows];
 		pickDataset.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					int selectedDataset = pickDataset.getSelectedIndex();
-					displayDataset(selectedDataset);
-				} catch (IOException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				}
+				int selectedDataset = pickDataset.getSelectedIndex();
+				displayDataset(selectedDataset);
 			}
 		});
 		init();
 	}
 
-	protected void displayDataset(int datasetIndex) throws IOException {
+	protected void displayDataset(int datasetIndex) {
 		char[] data = datasets.get(datasetIndex);
 		// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -192,6 +186,7 @@ public class DatasetIO extends JFrame {
 	protected void write() {
 		try {
 			writeDataset();
+			// writeDatasets();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -223,28 +218,29 @@ public class DatasetIO extends JFrame {
 		try {
 			out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
 			for (int j = 0; j < textfields.length; j++) {
-					out.write(textfields[j].getText());
-				}
+				out.write(textfields[j].getText());
+			}
 		} finally {
 			if (out != null)
 				out.close();
 		}
 	}
-//	protected void writeDataset() throws IOException {
-//		BufferedWriter out = null;
-//		try {
-//			out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
-//			for (int i = 0; i < numDatasetsInSession; i++) {
-//				for (int j = 0; j < textfields.length; j++) {
-//					out.write(textfields[j].getText());
-//				}
-//				out.write(System.lineSeparator());
-//			}
-//		} finally {
-//			if (out != null)
-//				out.close();
-//		}
-//	}
+
+	// protected void writeDatasets() throws IOException {
+	// BufferedWriter out = null;
+	// try {
+	// out = new BufferedWriter(new FileWriter(OUTPUT_FILE));
+	// for (int i = 0; i < numDatasetsInSession; i++) {
+	// for (int j = 0; j < textfields.length; j++) {
+	// out.write(textfields[j].getText());
+	// }
+	// out.write(System.lineSeparator());
+	// }
+	// } finally {
+	// if (out != null)
+	// out.close();
+	// }
+	// }
 
 	/**
 	 * @param args
