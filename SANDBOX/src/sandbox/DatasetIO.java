@@ -44,6 +44,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -72,7 +73,7 @@ public class DatasetIO extends JFrame {
 	private JTextField[] textfields;
 	private int numDatasetsInSession = 0;
 	private final JComboBox<Integer> pickDataset = new JComboBox<Integer>();
-	private static final int dataSize = 4195;
+//	private static final int dataSize = 4195;
 
 	public DatasetIO() {
 		this.rows = BLOCKS.length;
@@ -210,15 +211,13 @@ public class DatasetIO extends JFrame {
 
 	// TODO using "data" this way seems bad
 	protected int readDataset() throws IOException {
-		BufferedReader in = null;
-		char[] data = new char[dataSize + 1];
+		LineNumberReader in = null;
+		// FIXME correct init?
+		String s = "";
 		try {
-			in = new BufferedReader(new FileReader(INPUT_FILE));
-			while (in.read(data) != -1) {
-				datasets.add(data);
-				// read newline
-				in.read();
-				data = new char[dataSize +1 ];
+			in = new LineNumberReader(new FileReader(INPUT_FILE));
+			while ((s = in.readLine()) != null) {
+				datasets.add(s.toCharArray());
 			}
 		} finally {
 			if (in != null)
